@@ -1,0 +1,10 @@
+Subject: Il tuo codice di verifica
+
+Ciao {USERNAME},
+
+Il tuo codice di verifica è: {TFA_CODE}
+
+Scade fra {TFA_TTL} minuti e può essere usato una sola volta.
+Se non stavi tentando di accedere, ignora questo messaggio e valuta di cambiare la password.
+
+{EMAIL_SIG}

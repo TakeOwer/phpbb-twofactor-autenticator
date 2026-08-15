@@ -1,0 +1,11 @@
+# Two Factor Authentication - phpBB extension
+#
+# @author     Salvo Cortesiano
+# @copyright  (c) 2026-08-11 20:00 CEST Salvo Cortesiano
+# @link       https://netshadows.de/ombra/
+# @license    GNU General Public License, version 2 (GPL-2.0)
+
+salvocortesiano_twofactor_verify:
+    path: /twofactor/verify
+    defaults:
+        _controller: salvocortesiano.twofactor.controller:handle

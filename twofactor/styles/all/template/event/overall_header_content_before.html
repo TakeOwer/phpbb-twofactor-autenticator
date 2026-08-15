@@ -1,0 +1,43 @@
+<!--
+	Two Factor Authentication - phpBB extension
+	Author:    Salvo Cortesiano
+	Copyright: (c) 2026-08-11 20:00 CEST Salvo Cortesiano
+	Forum:     https://netshadows.de/ombra/
+	License:   GNU General Public License, version 2 (GPL-2.0)
+-->
+<!-- IF S_TFA_PROMO or S_TFA_PROMO_DONE -->
+<div class="tfa-promo<!-- IF S_TFA_PROMO_DONE --> tfa-promo-done<!-- ENDIF -->" role="status">
+	<span class="tfa-promo-icon" aria-hidden="true">
+		<!-- IF S_TFA_PROMO_DONE -->
+			<svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M12 1 3 5v6c0 5.25 3.84 10.16 9 11.5 5.16-1.34 9-6.25 9-11.5V5l-9-4Zm-1 15-4-4 1.4-1.4L11 13.2l4.6-4.6L17 10l-6 6Z"/></svg>
+		<!-- ELSE -->
+			<svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M12 1 3 5v6c0 5.25 3.84 10.16 9 11.5 5.16-1.34 9-6.25 9-11.5V5l-9-4Zm0 10.5h7c-.53 4.06-3.3 7.72-7 8.94V11.5H5V6.3l7-3.11V11.5Z"/></svg>
+		<!-- ENDIF -->
+	</span>
+	<span class="tfa-promo-text">
+		{TFA_PROMO_MSG}<!-- IF S_TFA_PROMO --> <a href="{U_TFA_SETUP}"><strong>{L_TFA_PROMO_LINK}</strong></a><!-- ENDIF -->
+	</span>
+</div>
+<style>
+.tfa-promo {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	margin: 10px 0;
+	padding: 12px 16px;
+	border: 1px solid #2e7d32;
+	border-left-width: 5px;
+	border-radius: 4px;
+	background: #e8f5e9;
+	color: #1b4d20;
+	font-size: 1.05em;
+	line-height: 1.5;
+}
+.tfa-promo-icon { flex-shrink: 0; line-height: 0; padding-top: 2px; color: #2e7d32; }
+.tfa-promo-text { flex: 1; }
+.tfa-promo-text a { color: #1b5e20; }
+.tfa-promo-done { border-color: #1565c0; background: #e3f2fd; color: #0d3c66; }
+.tfa-promo-done .tfa-promo-icon { color: #1565c0; }
+@media (max-width: 550px) { .tfa-promo { font-size: 1em; padding: 10px 12px; } }
+</style>
+<!-- ENDIF -->

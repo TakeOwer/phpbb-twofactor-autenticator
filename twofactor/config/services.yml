@@ -1,0 +1,55 @@
+# Two Factor Authentication - phpBB extension
+#
+# @author     Salvo Cortesiano
+# @copyright  (c) 2026-08-11 20:00 CEST Salvo Cortesiano
+# @link       https://netshadows.de/ombra/
+# @license    GNU General Public License, version 2 (GPL-2.0)
+
+parameters:
+    salvocortesiano.twofactor.table.methods: '%core.table_prefix%tfa_methods'
+    salvocortesiano.twofactor.table.backup:  '%core.table_prefix%tfa_backup'
+    salvocortesiano.twofactor.table.session: '%core.table_prefix%tfa_sessions'
+    salvocortesiano.twofactor.table.email:   '%core.table_prefix%tfa_email'
+
+services:
+    salvocortesiano.twofactor.manager:
+        class: salvocortesiano\twofactor\core\manager
+        arguments:
+            - '@dbal.conn'
+            - '@config'
+            - '@user'
+            - '@language'
+            - '%salvocortesiano.twofactor.table.methods%'
+            - '%salvocortesiano.twofactor.table.backup%'
+            - '%salvocortesiano.twofactor.table.session%'
+            - '%salvocortesiano.twofactor.table.email%'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+
+    salvocortesiano.twofactor.listener:
+        class: salvocortesiano\twofactor\event\main_listener
+        arguments:
+            - '@salvocortesiano.twofactor.manager'
+            - '@user'
+            - '@controller.helper'
+            - '@request'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+            - '@template'
+            - '@language'
+            - '@config'
+        tags:
+            - { name: event.listener }
+
+    salvocortesiano.twofactor.controller:
+        class: salvocortesiano\twofactor\controller\verify
+        arguments:
+            - '@salvocortesiano.twofactor.manager'
+            - '@user'
+            - '@template'
+            - '@language'
+            - '@request'
+            - '@controller.helper'
+            - '@config'
+            - '%core.root_path%'
+            - '%core.php_ext%'

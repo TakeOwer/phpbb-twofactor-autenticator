@@ -1,0 +1,134 @@
+<!--
+	Two Factor Authentication - phpBB extension
+	Author:    Salvo Cortesiano
+	Copyright: (c) 2026-08-11 20:00 CEST Salvo Cortesiano
+	Forum:     https://netshadows.de/ombra/
+	License:   GNU General Public License, version 2 (GPL-2.0)
+-->
+<!-- INCLUDE overall_header.html -->
+
+<a id="maincontent"></a>
+
+<h1>{L_ACP_TFA_SETTINGS}</h1>
+<p>{L_ACP_TFA_SETTINGS_EXPLAIN}</p>
+
+<!-- IF S_ERROR -->
+	<div class="errorbox">
+		<h3>{L_WARNING}</h3>
+		<p>{ERROR_MSG}</p>
+	</div>
+<!-- ENDIF -->
+
+<style>
+.tfa-stats { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 6px; }
+.tfa-stats div { flex: 1 1 220px; border: 1px solid #d5d9de; border-radius: 6px; padding: 12px 14px; background: #f7f9fb; }
+.tfa-stats span { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .6px; color: #6b7785; margin-bottom: 4px; }
+.tfa-stats strong { font-size: 18px; }
+.tfa-groups { display: flex; flex-wrap: wrap; gap: 6px 18px; max-width: 760px; }
+.tfa-groups label { display: inline-flex; align-items: center; gap: 6px; min-width: 190px; }
+.tfa-groups .tfa-special { font-weight: bold; }
+.tfa-sql { display: block; margin-top: 8px; background: #2d3748; color: #e2e8f0; padding: 10px 14px; border-radius: 4px; font-family: monospace; font-size: 12px; overflow-x: auto; white-space: pre; }
+</style>
+
+<form id="tfa_settings" method="post" action="{U_ACTION}">
+
+<fieldset>
+	<legend>{L_TFA_STATS}</legend>
+	<div class="tfa-stats">
+		<div><span>{L_TFA_COUNT_TOTP}</span><strong>{TFA_COUNT_TOTP}</strong></div>
+		<div><span>{L_TFA_COUNT_EMAIL}</span><strong>{TFA_COUNT_EMAIL}</strong></div>
+	</div>
+</fieldset>
+
+<fieldset>
+	<legend>{L_TFA_METHODS}</legend>
+	<dl>
+		<dt><label for="tfa_enable_totp">{L_TFA_ENABLE_TOTP}</label><br /><span>{L_TFA_ENABLE_TOTP_EXPLAIN}</span></dt>
+		<dd><input type="checkbox" class="checkbox" id="tfa_enable_totp" name="tfa_enable_totp" value="1"<!-- IF TFA_ENABLE_TOTP --> checked="checked"<!-- ENDIF --> /></dd>
+	</dl>
+	<dl>
+		<dt><label for="tfa_enable_email">{L_TFA_ENABLE_EMAIL}</label><br /><span>{L_TFA_ENABLE_EMAIL_EXPLAIN}</span></dt>
+		<dd><input type="checkbox" class="checkbox" id="tfa_enable_email" name="tfa_enable_email" value="1"<!-- IF TFA_ENABLE_EMAIL --> checked="checked"<!-- ENDIF --> /></dd>
+	</dl>
+	<dl>
+		<dt><label for="tfa_promo">{L_TFA_PROMO}</label><br /><span>{L_TFA_PROMO_EXPLAIN}</span></dt>
+		<dd><input type="checkbox" class="checkbox" id="tfa_promo" name="tfa_promo" value="1"<!-- IF TFA_PROMO --> checked="checked"<!-- ENDIF --> /></dd>
+	</dl>
+</fieldset>
+
+<fieldset>
+	<legend>{L_TFA_POLICY}</legend>
+	<dl>
+		<dt><label for="tfa_required">{L_TFA_REQUIRED}</label><br /><span>{L_TFA_REQUIRED_EXPLAIN}</span></dt>
+		<dd><input type="checkbox" class="checkbox" id="tfa_required" name="tfa_required" value="1"<!-- IF TFA_REQUIRED --> checked="checked"<!-- ENDIF --> /></dd>
+	</dl>
+	<dl>
+		<dt><label>{L_TFA_EXEMPT_GROUPS}</label><br /><span>{L_TFA_EXEMPT_GROUPS_EXPLAIN}</span></dt>
+		<dd>
+			<div class="tfa-groups">
+			<!-- BEGIN tfa_group -->
+				<label<!-- IF tfa_group.S_SPECIAL --> class="tfa-special"<!-- ENDIF -->>
+					<input type="checkbox" class="checkbox" name="tfa_exempt_groups[]" value="{tfa_group.ID}"<!-- IF tfa_group.S_EXEMPT --> checked="checked"<!-- ENDIF --> />
+					{tfa_group.NAME}
+				</label>
+			<!-- END tfa_group -->
+			</div>
+		</dd>
+	</dl>
+</fieldset>
+
+<fieldset>
+	<legend>{L_TFA_LIMITS}</legend>
+	<dl>
+		<dt><label for="tfa_code_ttl">{L_TFA_CODE_TTL}</label><br /><span>{L_TFA_CODE_TTL_EXPLAIN}</span></dt>
+		<dd><input type="number" id="tfa_code_ttl" name="tfa_code_ttl" min="60" max="3600" size="6" value="{TFA_CODE_TTL}" /> {L_TFA_SECONDS}</dd>
+	</dl>
+	<dl>
+		<dt><label for="tfa_max_attempts">{L_TFA_MAX_ATTEMPTS}</label><br /><span>{L_TFA_MAX_ATTEMPTS_EXPLAIN}</span></dt>
+		<dd><input type="number" id="tfa_max_attempts" name="tfa_max_attempts" min="1" max="20" size="4" value="{TFA_MAX_ATTEMPTS}" /></dd>
+	</dl>
+</fieldset>
+
+<fieldset>
+	<legend>{L_TFA_RESET_USER}</legend>
+	<p>{L_TFA_RESET_USER_EXPLAIN}</p>
+	<dl>
+		<dt><label for="tfa_username">{L_TFA_USERNAME}</label></dt>
+		<dd>
+			<input type="text" id="tfa_username" name="tfa_username" size="30" maxlength="255" value="" />
+			<input class="button2" type="submit" name="tfa_reset_user" value="{L_TFA_RESET_BTN}" />
+		</dd>
+	</dl>
+</fieldset>
+
+<fieldset>
+	<legend>{L_TFA_LOCKOUT_TITLE}</legend>
+	<p>{L_TFA_LOCKOUT_EXPLAIN}</p>
+
+	<dl>
+		<dt><label>{L_TFA_EMERGENCY_SELF}</label><br /><span>{L_TFA_EMERGENCY_SELF_EXPLAIN}</span></dt>
+		<dd>
+			<a class="button2" href="{U_TFA_RESET_SELF}" data-ajax="true">{L_TFA_EMERGENCY_SELF_BTN}</a>
+			<code class="tfa-sql">DELETE m FROM {TFA_TABLE_PREFIX}tfa_methods m
+  JOIN {TFA_TABLE_PREFIX}users u ON u.user_id = m.user_id
+  WHERE u.username_clean = '{TFA_ADMIN_CLEAN}';</code>
+		</dd>
+	</dl>
+
+	<dl>
+		<dt><label>{L_TFA_EMERGENCY_REQ}</label><br /><span>{L_TFA_EMERGENCY_REQ_EXPLAIN}</span></dt>
+		<dd>
+			<a class="button2" href="{U_TFA_DROP_REQ}" data-ajax="true">{L_TFA_EMERGENCY_REQ_BTN}</a>
+			<code class="tfa-sql">UPDATE {TFA_TABLE_PREFIX}config SET config_value = '0' WHERE config_name = 'tfa_required';</code>
+		</dd>
+	</dl>
+</fieldset>
+
+<fieldset class="submit-buttons">
+	<input class="button1" type="submit" id="submit" name="submit" value="{L_SUBMIT}" />
+	<input class="button2" type="reset" value="{L_RESET}" name="reset" />
+	{S_FORM_TOKEN}
+</fieldset>
+</form>
+
+<!-- INCLUDE overall_footer.html -->

@@ -1,0 +1,56 @@
+<!--
+	Two Factor Authentication - phpBB extension
+	Author:    Salvo Cortesiano
+	Copyright: (c) 2026-08-11 20:00 CEST Salvo Cortesiano
+	Forum:     https://netshadows.de/ombra/
+	License:   GNU General Public License, version 2 (GPL-2.0)
+-->
+<!-- INCLUDE overall_header.html -->
+
+<div class="panel">
+	<div class="inner">
+		<h2>{L_TFA_VERIFY_TITLE}</h2>
+
+		<!-- IF S_TFA_ERROR -->
+			<div class="errorbox"><p>{TFA_ERROR_MSG}</p></div>
+		<!-- ENDIF -->
+
+		<!-- IF S_TFA_EMAIL_SENT -->
+			<div class="successbox"><p>{L_TFA_EMAIL_SENT}</p></div>
+		<!-- ENDIF -->
+
+		<p>
+			<!-- IF S_TFA_HAS_TOTP -->{L_TFA_VERIFY_TOTP_EXPLAIN}<!-- ENDIF -->
+			<!-- IF S_TFA_HAS_EMAIL -->{L_TFA_VERIFY_EMAIL_EXPLAIN}<!-- ENDIF -->
+		</p>
+
+		<form method="post" action="{U_TFA_ACTION}" id="tfa_verify">
+			<fieldset>
+				<dl>
+					<dt><label for="tfa_code">{L_TFA_CODE}</label></dt>
+					<dd>
+						<input type="text" name="tfa_code" id="tfa_code" size="12" maxlength="12"
+							inputmode="numeric" autocomplete="one-time-code" autofocus="autofocus" value="" />
+					</dd>
+				</dl>
+				<dl>
+					<dt>&nbsp;</dt>
+					<dd>
+						<input type="submit" class="button1" name="tfa_submit" value="{L_TFA_SUBMIT}" />
+						<!-- IF S_TFA_HAS_EMAIL -->
+							<input type="submit" class="button2" name="tfa_send_email" value="{L_TFA_SEND_EMAIL}" />
+						<!-- ENDIF -->
+					</dd>
+				</dl>
+				{S_FORM_TOKEN}
+			</fieldset>
+		</form>
+
+		<p class="rules">
+			{L_TFA_BACKUP_HINT} <strong>{TFA_BACKUP_LEFT}</strong><br />
+			<a href="{U_TFA_LOGOUT}">{L_TFA_LOGOUT}</a>
+		</p>
+	</div>
+</div>
+
+<!-- INCLUDE overall_footer.html -->

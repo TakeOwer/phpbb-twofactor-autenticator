@@ -1,0 +1,133 @@
+<!--
+	Two Factor Authentication - phpBB extension
+	Author:    Salvo Cortesiano
+	Copyright: (c) 2026-08-11 20:00 CEST Salvo Cortesiano
+	Forum:     https://netshadows.de/ombra/
+	License:   GNU General Public License, version 2 (GPL-2.0)
+-->
+<!-- INCLUDE overall_header.html -->
+
+<h2>{L_UCP_TFA_SETTINGS}</h2>
+
+<div class="panel">
+	<div class="inner">
+		<p>{L_TFA_UCP_EXPLAIN}</p>
+
+		<!-- IF S_TFA_ERROR -->
+			<div class="errorbox"><p>{TFA_ERROR_MSG}</p></div>
+		<!-- ENDIF -->
+
+		<!-- IF S_TFA_NEW_CODES -->
+		<div class="successbox">
+			<p><strong>{L_TFA_BACKUP_NEW}</strong><br />{L_TFA_BACKUP_NEW_EXPLAIN}</p>
+			<p class="tfa-codes">
+				<!-- BEGIN tfa_backup_code -->{tfa_backup_code.CODE}<br /><!-- END tfa_backup_code -->
+			</p>
+		</div>
+		<!-- ENDIF -->
+
+		<form method="post" action="{U_TFA_ACTION}" id="ucp_tfa">
+
+		<!-- IF S_TFA_TOTP_ALLOWED -->
+		<fieldset>
+			<legend>{L_TFA_TOTP}</legend>
+			<!-- IF S_TFA_TOTP_ON -->
+				<dl>
+					<dt><label>{L_TFA_STATUS}</label></dt>
+					<dd><strong class="tfa-on">{L_TFA_ACTIVE}</strong></dd>
+				</dl>
+				<dl>
+					<dt>&nbsp;</dt>
+					<dd><input type="submit" class="button2" name="tfa_action" value="{L_TFA_DISABLE}" onclick="this.form.tfa_action.value='disable_totp';" /></dd>
+				</dl>
+			<!-- ELSE -->
+				<p>{L_TFA_TOTP_EXPLAIN}</p>
+				<dl>
+					<dt><label>{L_TFA_QR}</label><br /><span>{L_TFA_QR_EXPLAIN}</span></dt>
+					<dd><div id="tfa-qr" data-uri="{TFA_QR_URI}"></div></dd>
+				</dl>
+				<dl>
+					<dt><label>{L_TFA_SECRET}</label><br /><span>{L_TFA_SECRET_EXPLAIN}</span></dt>
+					<dd><code class="tfa-secret">{TFA_SECRET_HUMAN}</code></dd>
+				</dl>
+				<dl>
+					<dt><label for="tfa_confirm">{L_TFA_CONFIRM}</label><br /><span>{L_TFA_CONFIRM_EXPLAIN}</span></dt>
+					<dd>
+						<input type="text" name="tfa_confirm" id="tfa_confirm" size="10" maxlength="8" inputmode="numeric" autocomplete="one-time-code" value="" />
+						<input type="hidden" name="tfa_pending" value="{TFA_SECRET}" />
+					</dd>
+				</dl>
+				<dl>
+					<dt>&nbsp;</dt>
+					<dd><input type="submit" class="button1" value="{L_TFA_ENABLE}" onclick="this.form.tfa_action.value='enable_totp';" /></dd>
+				</dl>
+			<!-- ENDIF -->
+		</fieldset>
+		<!-- ENDIF -->
+
+		<!-- IF S_TFA_EMAIL_ALLOWED -->
+		<fieldset>
+			<legend>{L_TFA_EMAIL}</legend>
+			<!-- IF S_TFA_EMAIL_ON -->
+				<dl>
+					<dt><label>{L_TFA_STATUS}</label></dt>
+					<dd><strong class="tfa-on">{L_TFA_ACTIVE}</strong> &mdash; {TFA_USER_EMAIL}</dd>
+				</dl>
+				<dl>
+					<dt>&nbsp;</dt>
+					<dd><input type="submit" class="button2" value="{L_TFA_DISABLE}" onclick="this.form.tfa_action.value='disable_email';" /></dd>
+				</dl>
+			<!-- ELSE -->
+				<p>{L_TFA_EMAIL_EXPLAIN} <strong>{TFA_USER_EMAIL}</strong></p>
+				<dl>
+					<dt>&nbsp;</dt>
+					<dd><input type="submit" class="button1" value="{L_TFA_ENABLE}" onclick="this.form.tfa_action.value='enable_email';" /></dd>
+				</dl>
+			<!-- ENDIF -->
+		</fieldset>
+		<!-- ENDIF -->
+
+		<!-- IF S_TFA_ANY_ON -->
+		<fieldset>
+			<legend>{L_TFA_BACKUP}</legend>
+			<p>{L_TFA_BACKUP_EXPLAIN}</p>
+			<dl>
+				<dt><label>{L_TFA_BACKUP_LEFT}</label></dt>
+				<dd><strong>{TFA_BACKUP_LEFT}</strong></dd>
+			</dl>
+			<dl>
+				<dt>&nbsp;</dt>
+				<dd><input type="submit" class="button2" value="{L_TFA_BACKUP_NEW_BTN}" onclick="this.form.tfa_action.value='new_backup';" /></dd>
+			</dl>
+		</fieldset>
+		<!-- ENDIF -->
+
+		<input type="hidden" name="tfa_action" value="" />
+		<fieldset class="submit-buttons">{S_FORM_TOKEN}</fieldset>
+		</form>
+	</div>
+</div>
+
+<style>
+.tfa-on { color: #1f9d55; }
+.tfa-secret { font-size: 1.2em; letter-spacing: 1px; background: #f3f4f6; padding: 4px 8px; border-radius: 4px; display: inline-block; }
+.tfa-codes { font-family: monospace; font-size: 1.15em; line-height: 1.7; }
+#tfa-qr { background: #fff; display: inline-block; padding: 8px; min-height: 20px; }
+#tfa-qr canvas, #tfa-qr img { display: block; }
+</style>
+<script src="{ROOT_PATH}ext/salvocortesiano/twofactor/styles/all/template/qrcode.js"></script>
+<script>
+(function () {
+	'use strict';
+
+	var box = document.getElementById('tfa-qr');
+
+	if (!box || !box.getAttribute('data-uri') || typeof window.agmQrRender !== 'function') { return; }
+
+	// Drawn here in the browser: the secret never leaves the board, which is
+	// exactly what an online QR generator would not guarantee.
+	window.agmQrRender(box, box.getAttribute('data-uri'));
+}());
+</script>
+
+<!-- INCLUDE overall_footer.html -->

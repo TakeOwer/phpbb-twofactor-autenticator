@@ -1,0 +1,10 @@
+Subject: Your verification code
+
+Hello {USERNAME},
+
+Your verification code is: {TFA_CODE}
+
+It stops working in {TFA_TTL} minutes, and it can be used only once.
+If you did not try to sign in, ignore this message and consider changing your password.
+
+{EMAIL_SIG}
